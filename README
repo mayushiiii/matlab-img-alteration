@@ -1,0 +1,61 @@
+explicatiile pt tema asta urmeaza sa fie mai sumare decat deobicei, asta atat
+datorita unei oboseli combinata cu lipsa de timp si moleseala de vara, cat si
+faptului ca explicatiile sunt atat de concise si directe si de pas-cu-pas in
+cadrul scheletului incat imi vine greu sa elaborez suplimentar asupra lor.
+
+___________________________________Proximal____________________________________
+
+lucrul de tip 2x2 este un caz particular, prin urmare este scris in mod direct
+pe pixeli.
+
+proximal 2x2 are ca atractie principala aproximarea coeficientilor din x si y_int,
+ale caror valori finale pot fi 1 sau 2. aceasta aproximare se realizeaza cu 
+ajutorul lui round, fiind cea mai directa cale de a face asta.
+
+resize-ul consta in obtinerea 'ingredientelor' necesare in primul rand:
+factorul de scalare(dat de impartirea intre size ul dorit si cel initial),
+matricea de transformare si inversa ei , apoi pe baza formulei ,o ultima 
+re-scalare(incrementarea cu 1 pt a trece in sistemul de coordonate potrivit) 
+si o aproximare, se afla elementul din imaginea finala.
+
+proximal 2x2 rgb este un caz particular din nou; are loc extragerea, aproximarea
+apoi concatenarea celor 3 canale.
+
+resize-ul rgb e copilul celor doua de mai sus. se extrag datele in acelasi stil 
+ca la proximal rgb, insa se apeleaza resize-ul pt fiecare componenta, apoi se
+concateneaza.
+
+rotate-ul are la baza determinarea matricii de transformare, a carei inversa este
+ apoi folosita. determinarea de x-uri si y uri este mai fortata la mine datorita
+unor aproximari trase de coada, deoarece exista cazul in care iesim din imagine 
+cand determinam x2-ul, caz in care ar trebui sa-l ducem inapoi unde trebuie si 
+de aia scadem 1 din x1 si x2 respectiv (sau y1 si y2). se afla coeficientii 
+a1..4 rezolvand sistemul specificat in suportul temei, iar apoi tot de acolo se
+aplica formula pentru a afla pixelul(rotit).
+
+rotirea rgb idem resize dar pt rotire.
+
+_____________________________________Bicubic___________________________________
+
+TESTELE RULEAZA FOARTE LENT. IMI STA INIMA IN LOC SA VAD DACA IAU SCOR SI NU
+POT SA ASTEPT DE EMOTIE
+
+fx fy fxy sunt functii generice pt calculul derivatei pe baza exemplului
+
+coef este tot o functie mai mult utilitara, care calculeaza matricea de 
+coeficienti pe baza celor 3 componente de asemenea luate din exemplu. matricea
+finala este produsul dintre aceste 3 componente.
+
+precalc returneaza 3 matrici, pentru care se calculeaza, in fiecare caz, alte
+derivate, in raport cu variabilele pe care le reprezinta (x, y si xy). parcurgerile
+acestora sunt 'customizate' in functie de pozitiile pe care se gasesc valori 
+diferite de zero( in cazul lui x sunt valori de zero pe prima si ultima coloana,in
+cazul lui y sunt zerouri pe prima si ultima linie , iar in cazul lui xy pe toate
+marginile exterioare). 
+
+resize-ul seamana mult ca abordare cu rotirea proximala: se formeaza elementele
+relevante rezolvarii: matricea de transformare, derivatele, xp si yp, apoi
+punctele ce le inconjoara, se apeleaza functia pentru calcul de coeficienti
+bicubici, iar apoi se modifica coordonatele (se trece la patratul unitate) 
+si se calculeaza valoarea finala pe baza formulei.
+_______________________________________________________________________________
